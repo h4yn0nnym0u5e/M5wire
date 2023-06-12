@@ -65,6 +65,7 @@ public:
 	M5w_8encoder(uint8_t ad = 0x41, TwoWire& w = Wire) : M5w_Unit(ad, w) {}
 
 	int32_t getCount(uint8_t ch);
+	void setCount(int8_t ch,int32_t count);
 	int32_t getIncrement(uint8_t ch);  
 	void resetCount(int8_t ch);
 	void resetCounts(uint8_t mask);

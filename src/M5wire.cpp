@@ -160,6 +160,17 @@ int32_t M5w_8encoder::getCount(uint8_t ch) //!< counter channel
 
 
 /**
+ * Set counter value
+ * \return counter value,range ±2Gi
+ */
+void M5w_8encoder::setCount(int8_t ch,		//!< counter channel
+							int32_t count) 	//!< count to set
+{
+	writeBytes(0x00 + 4*ch,(uint8_t*) &count,4);
+}
+
+
+/**
  * Reset counter value
  */
 void M5w_8encoder::resetCount(int8_t ch) //!< counter channel
