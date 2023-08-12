@@ -43,14 +43,18 @@ class M5w_Unit {
 //====================================================
 class M5w_8angle : public M5w_Unit
 {
+  static const int POT_COUNT = 8;
   const uint16_t POTMAX = 0xFFC;
-  uint16_t potValues[8] = {0};
+  uint16_t potValues[POT_COUNT] = {0};
+  enum {unhooked,under,over,hooking} hooks[POT_COUNT];
   
 public:  
-  M5w_8angle(uint8_t ad = 0x43, TwoWire& w = Wire) : M5w_Unit(ad, w) {}
+  M5w_8angle(uint8_t ad = 0x43, TwoWire& w = Wire) : M5w_Unit(ad, w),hooks{unhooked} {}
   
   uint16_t getPot16(uint8_t ch);
+  uint16_t getLast(uint8_t ch) { return potValues[ch]; }
   uint8_t getSwitch(void);
+  void setHook(uint8_t ch, uint16_t value);
   void writeLED(uint8_t led,uint32_t colour);
 };
 

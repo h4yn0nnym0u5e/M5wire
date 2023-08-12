@@ -120,11 +120,58 @@ uint16_t M5w_8angle::getPot16(uint8_t ch) //!< potentiometer number, 0..7
   if (0 == readBytes(0x0 + ch*2,(uint8_t*) &value,2))
   {
     value = value > POTMAX?0:POTMAX-value;
-    potValues[ch] = value;
+	switch (hooks[ch])
+	{
+	  case unhooked:
+		potValues[ch] = value;
+		break;
+		
+	  case hooking:
+	    if (value < potValues[ch])
+			hooks[ch] = under;
+		else if (value > potValues[ch])
+			hooks[ch] = over;
+		else
+		{
+			hooks[ch] = unhooked;
+			potValues[ch] = value;
+		}
+		break;
+		
+	  case under:
+		if (value >= potValues[ch])
+		{
+			hooks[ch] = unhooked;
+			potValues[ch] = value;
+		}
+		break;
+		
+	  case over:
+		if (value <= potValues[ch])
+		{
+			hooks[ch] = unhooked;
+			potValues[ch] = value;
+		}
+		break;
+	}
   }
 
-  return value;
+  return potValues[ch];
 }
+
+/**
+ * Set pot hook point.
+ * Set value and state such that the value is always returned by
+ * ::getPot16() until the pot is turned through the hook point, 
+ * after which it is unhooked and the returned value will
+ * reflect the physical position.
+ */
+void M5w_8angle::setHook(uint8_t ch, uint16_t value)
+{
+	hooks[ch] = hooking;
+	potValues[ch] = value;
+}
+ 
 
 
 /**
