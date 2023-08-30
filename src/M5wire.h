@@ -55,6 +55,8 @@ public:
   uint16_t getLast(uint8_t ch) { return potValues[ch]; }
   uint8_t getSwitch(void);
   void setHook(uint8_t ch, uint16_t value);
+  bool isHooking(uint8_t ch) { return hooks[ch] != unhooked; };
+  void clearHook(uint8_t ch) { hooks[ch] = unhooked; };
   void writeLED(uint8_t led,uint32_t colour);
 };
 
