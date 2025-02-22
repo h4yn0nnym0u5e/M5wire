@@ -52,7 +52,7 @@ uint8_t M5w_Unit::readBytes(uint8_t reg,	//!< register address within the unit
 	if (wire.requestFrom(addr, (uint8_t) n))
 	{
 	  for (int i=0;i<n;i++)
-		value[i] = Wire.read();
+		value[i] = wire.read();
 	}
 	else
 	  endError=10;
