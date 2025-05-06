@@ -120,6 +120,8 @@ uint16_t M5w_8angle::getPot16(uint8_t ch) //!< potentiometer number, 0..7
   if (0 == readBytes(0x0 + ch*2,(uint8_t*) &value,2))
   {
     value = value > POTMAX?0:POTMAX-value;
+	//if (7==ch)
+	//	Serial.println(value);
 	switch (hooks[ch])
 	{
 	  case unhooked:
@@ -291,9 +293,18 @@ uint8_t M5w_8encoder::getButton(int8_t ch) //!< encoder channel, or -1 to get al
  * Set LED colour
  */
 void M5w_8encoder::writeLED(uint8_t led,	//!< LED number, 0..8
-						  uint32_t colour)	//!< colour: <B><G><R>
+						  uint32_t _colour)	//!< colour: <B><G><R>
 {
-	writeBytes(led*3+0x70,(uint8_t*) &colour,3);
+	union {uint32_t raw; struct {uint8_t b,g,r,l;};} colour = {_colour};
+
+	if (0 != colour.l && 100 != colour.l)
+	{
+		colour.r = colour.r*colour.l/100;
+		colour.g = colour.g*colour.l/100;
+		colour.b = colour.b*colour.l/100;
+	}
+	// Serial.printf("%08X -> %08X\n", _colour, colour.raw);
+	writeBytes(led*3+0x70,(uint8_t*) &colour.raw,3);
 	lastLEDtime = micros();
 }
 
